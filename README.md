@@ -89,6 +89,8 @@ echo "CLIENT_ID=your_discord_client_id_here" > ~/.spacekeep.env
 | `spacekeep start --details "text" --state "text"` | Start with custom status text |
 | `spacekeep start --game "Game Name"` | Manually set status to show you are playing a game |
 | `spacekeep start --follow` | Automatically update status when you start playing a game |
+| `spacekeep start --icon <asset_key>` | Add a small image (game logo) in the bottom-right of the RPC icon |
+| `spacekeep start --icon-text <text>` | Tooltip text for the small image |
 | `spacekeep stop` | Stop the active broadcast |
 | `spacekeep status` | Check connection state, env configuration, and current activity |
 | `spacekeep --help` | Show help information |
@@ -112,6 +114,12 @@ spacekeep start --details "Refactoring CLI" --state "v2.0.0-beta"
 spacekeep start --game "Cyberpunk 2077"
 ```
 Shows "Playing Cyberpunk 2077" in your Discord status.
+
+**Manually Set Game Status with Icon**
+```bash
+spacekeep start --game "Cyberpunk 2077" --icon cyberpunk_2077_logo --icon-text "Cyberpunk 2077"
+```
+Shows "Playing Cyberpunk 2077" with the game logo in the bottom-right corner of your RPC icon.
 
 **Auto-Follow Game Activity**
 ```bash
@@ -159,6 +167,14 @@ Manually set a game name to broadcast:
 ```bash
 spacekeep start --game "Cyberpunk 2077"
 ```
+
+Add a small game logo in the bottom-right corner of your RPC icon:
+
+```bash
+spacekeep start --game "Cyberpunk 2077" --icon cyberpunk_2077_logo --icon-text "Cyberpunk 2077"
+```
+
+> **Note:** The `--icon` value must be a Discord asset key uploaded to your application in the [Developer Portal](https://discord.com/developers/applications).
 
 #### Auto-Follow Mode
 
@@ -246,6 +262,7 @@ npm pack
 | **Buttons not showing on Discord** | Buttons are only visible to other users, not yourself. Check your Discord Developer Portal settings and restart Discord. |
 | **"spacekeep: command not found"** | Run `npm link` again and verify you're in the project directory. |
 | **"unknown command 'status'"** | You are using an older global install. Run `npm link` in the local repo or use `node index.js status` for the latest features. |
+| **Small image not showing** | The `--icon` value must match an asset key uploaded to your Discord application. Check your Developer Portal. |
 
 </details>
 
@@ -300,6 +317,7 @@ SpaceKeep is a modern infrastructure management platform designed for developers
 
 - 🎲 Added `--follow` flag to auto-detect and broadcast current game activity
 - 🕹️ Added `--game <name>` flag to manually set game status
+- 🖼️ Added `--icon <key>` and `--icon-text <text>` for small game logo in RPC
 - 🎯 Enhanced `--details` and `--state` customization
 - 📊 `status` now shows current activity details
 - 🛡️ Graceful handling of presence updates and game transitions
