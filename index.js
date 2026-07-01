@@ -51,7 +51,7 @@ function setActivity(details, state, smallImageKey, smallImageText, partySize, e
 
   if (partySize) {
     const [current, max] = partySize.split('/').map(Number);
-    if (!isNaN(current) && !isNaN(max)) {
+    if (!isNaN(current) && !isNaN(max) && current > 0 && max > 0) {
       activity.partySize = current;
       activity.partyMax = max;
     }
