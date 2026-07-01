@@ -1,0 +1,13 @@
+{
+  "name": "spacekeep-cli",
+  "version": "1.0.0",
+  "description": "Professional RPC status manager for SpaceKeep.",
+  "bin": {
+    "spacekeep": "./index.js"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "discord-rpc": "^4.0.1",
+    "dotenv": "^17.4.2"
+  }
+}
