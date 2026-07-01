@@ -32,6 +32,9 @@
 | 🔒 **Secure** | Designed for developers who value security and local configuration. |
 | 📖 **Open Source** | Fully auditable code under the MIT License. |
 | 🎮 **Discord Rich Presence** | Display your SpaceKeep development status with interactive buttons. |
+| ✅ **Idempotent Commands** | `start` and `stop` are safe to run multiple times. |
+| 🎯 **Custom Status** | Override details and state via CLI flags. |
+| 📊 **Status Check** | Verify connection state and env configuration. |
 
 ---
 
@@ -81,7 +84,9 @@ echo "CLIENT_ID=your_discord_client_id_here" > ~/.spacekeep.env
 | Command | Description |
 |---------|-------------|
 | `spacekeep start` | Start broadcasting your Rich Presence status |
+| `spacekeep start --details "text" --state "text"` | Start with custom status text |
 | `spacekeep stop` | Stop the active broadcast |
+| `spacekeep status` | Check connection state and env configuration |
 | `spacekeep --help` | Show help information |
 | `spacekeep --version` | Show version number |
 
@@ -93,6 +98,11 @@ spacekeep start
 ```
 This will display your SpaceKeep development status on your Discord profile.
 
+**Start with Custom Status**
+```bash
+spacekeep start --details "Refactoring CLI" --state "v2.0.0-beta"
+```
+
 **Stop Broadcasting**
 ```bash
 spacekeep stop
@@ -102,6 +112,7 @@ spacekeep stop
 ```bash
 spacekeep status
 ```
+Shows whether RPC is connected, the active env file, and your Client ID.
 
 ---
 
@@ -202,11 +213,18 @@ npm pack
 | Issue | Solution |
 |-------|----------|
 | **"Cannot find module 'commander'"** | `npm install commander discord-rpc` |
-| **"CLIENT_ID is not defined"** | Ensure you have a `.env` file in the project root with `CLIENT_ID=your_client_id` |
+| **"CLIENT_ID is not defined"** | Create `.env` (local) or `~/.spacekeep.env` (global) with `CLIENT_ID=your_client_id`. |
+| **"Client has been destroyed"** | The process was stopped. Restart the CLI to broadcast again. |
 | **Buttons not showing on Discord** | Buttons are only visible to other users, not yourself. Check your Discord Developer Portal settings and restart Discord. |
 | **"spacekeep: command not found"** | Run `npm link` again and verify you're in the project directory. |
 
 </details>
+
+### Environment File Priority
+
+SpaceKeep CLI looks for your Client ID in this order:
+1. `.env` in the project root (local development)
+2. `~/.spacekeep.env` (global npm installs)
 
 ---
 
@@ -248,6 +266,16 @@ SpaceKeep is a modern infrastructure management platform designed for developers
 ---
 
 ## 📋 Changelog
+
+### v1.1.0 (2026-07-01)
+
+- ✅ Idempotent `start` and `stop` commands (safe to run multiple times)
+- 🎯 `start` now accepts `--details` and `--state` CLI flags
+- 📊 Implemented `status` command with env detection
+- 🔒 Graceful `CLIENT_ID` validation with helpful error messages
+- 🌍 Global env file support (`~/.spacekeep.env`)
+- 🐛 Fixed duplicate event listener accumulation
+- 🛡️ Clean shutdown and disconnect handling
 
 ### v1.0.0 (2026-07-01)
 
