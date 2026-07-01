@@ -22,6 +22,8 @@ function loadEnv() {
 
 const envPath = loadEnv();
 const CLIENT_ID = process.env.CLIENT_ID;
+const PACKAGE = require('./package.json');
+const PACKAGE_VERSION = `v${PACKAGE.version}`;
 
 const client = new RPC.Client({ transport: 'ipc' });
 let isConnected = false;
@@ -32,7 +34,7 @@ let startTime = null;
 function setActivity(details, state, smallImageKey, smallImageText, partySize, elapsed) {
   const activity = {
     details,
-    state,
+    state: state || undefined,
     largeImageKey: 'spacekeep_logo',
     largeImageText: 'SpaceKeep Infrastructure',
     buttons: [
@@ -66,13 +68,13 @@ function setActivity(details, state, smallImageKey, smallImageText, partySize, e
 program
   .name('spacekeep')
   .description('SpaceKeep CLI - The official tool for SpaceKeep infrastructure management.')
-  .version('1.0.0');
+  .version(PACKAGE_VERSION);
 
 program
   .command('start')
   .description('Initialize the SpaceKeep Rich Presence broadcast.')
   .option('--details <text>', 'Custom details text', 'Building SpaceKeep')
-  .option('--state <text>', 'Custom state text', 'v1.0.0-production')
+  .option('--state <text>', 'Custom state text')
   .option('--game <name>', 'Set status to show you are playing a specific game')
   .option('--icon <key>', 'Discord asset key for the small image')
   .option('--icon-text <text>', 'Tooltip text for the small image')
@@ -103,10 +105,11 @@ program
       isConnected = true;
 
       if (options.game) {
-        setActivity(`Playing ${options.game}`, options.state, options.icon, options.iconText, options.party, options.elapsed);
+        setActivity(`Playing ${options.game}`, undefined, options.icon, options.iconText, options.party, options.elapsed);
         console.log(`Broadcasting: Playing ${options.game}${options.party ? ` (party: ${options.party})` : ''}${options.elapsed ? ' [elapsed]' : ''}`);
       } else {
-        setActivity(options.details, options.state, options.icon, options.iconText, options.party, options.elapsed);
+        const state = options.state || PACKAGE_VERSION;
+        setActivity(options.details, state, options.icon, options.iconText, options.party, options.elapsed);
         console.log(`Successfully initialized SpaceKeep RPC broadcast (env: ${envPath || 'none'}).`);
       }
 
@@ -115,10 +118,11 @@ program
         client.on('presenceUpdate', (_, presence) => {
           const game = presence.activities?.find((a) => a.type === 0 && a.name);
           if (game) {
-            setActivity(`Playing ${game.name}`, options.state, options.icon, options.iconText, options.party, options.elapsed);
+            setActivity(`Playing ${game.name}`, undefined, options.icon, options.iconText, options.party, options.elapsed);
             console.log(`Now playing: ${game.name}`);
           } else if (currentActivity?.details?.startsWith('Playing ')) {
-            setActivity(options.details, options.state, options.icon, options.iconText, options.party, options.elapsed);
+            const state = options.state || PACKAGE_VERSION;
+            setActivity(options.details, state, options.icon, options.iconText, options.party, options.elapsed);
             console.log('Stopped playing, reverted to default status.');
           }
         });

@@ -171,8 +171,10 @@ CLIENT_ID=your_new_client_id_here
 Use CLI flags to customize your status without editing code:
 
 ```bash
-spacekeep start --details "Building SpaceKeep" --state "v1.0.0-production"
+spacekeep start --details "Building SpaceKeep" --state "custom-status"
 ```
+
+> **Note:** By default, the state line shows the current CLI version from `package.json`. When using `--game` or `--follow`, the version is hidden to give more attention to the game name.
 
 ### Game Status
 
@@ -183,6 +185,8 @@ Manually set a game name to broadcast:
 ```bash
 spacekeep start --game "Cyberpunk 2077"
 ```
+
+> **Note:** When using `--game`, the version line is hidden so the game name gets full attention.
 
 Add a small game logo in the bottom-right corner of your RPC icon:
 
@@ -217,7 +221,7 @@ Automatically detect and broadcast whatever game you are currently playing on Di
 spacekeep start --follow
 ```
 
-When you start a game, SpaceKeep will update your status to show `Playing <Game Name>`. When you stop playing, it reverts to your default status.
+When you start a game, SpaceKeep will update your status to show `Playing <Game Name>` and hide the version line. When you stop playing, it reverts to your default status with the current CLI version.
 
 > **Note:** Auto-follow requires Discord to be running and the game to be detectable by Discord's activity system.
 
