@@ -43,7 +43,7 @@
 - npm (comes with Node.js)
 - A Discord Application with Rich Presence enabled
 
-### Quick Setup
+### Option 1: Clone the Repository
 
 ```bash
 # 1. Clone the repository
@@ -58,6 +58,16 @@ echo "CLIENT_ID=your_discord_client_id_here" > .env
 
 # 4. Install globally
 npm link
+```
+
+### Option 2: Install via npm
+
+```bash
+# Install globally from npm registry
+npm install -g spacekeep-cli
+
+# Configure your Discord Client ID
+echo "CLIENT_ID=your_discord_client_id_here" > ~/.spacekeep.env
 ```
 
 > **Note:** You can find your Client ID in the Discord [Developer Portal](https://discord.com/developers/applications) under your application.
