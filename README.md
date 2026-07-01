@@ -36,6 +36,8 @@
 | 🎯 **Custom Status** | Override details and state via CLI flags. |
 | 🎲 **Game Detection** | Auto-detect when you start playing a game on Discord (`--follow`). |
 | 🕹️ **Manual Game Mode** | Manually set a game name (`--game`) without auto-detection. |
+| ⏱️ **Elapsed Timer** | Show live elapsed time counter with `--elapsed`. |
+| 👥 **Party Size** | Display party size with `--party current/max` for multiplayer visibility. |
 | 📊 **Status Check** | Verify connection state, env configuration, and current activity. |
 
 ---
@@ -91,6 +93,8 @@ echo "CLIENT_ID=your_discord_client_id_here" > ~/.spacekeep.env
 | `spacekeep start --follow` | Automatically update status when you start playing a game |
 | `spacekeep start --icon <asset_key>` | Add a small image (game logo) in the bottom-right of the RPC icon |
 | `spacekeep start --icon-text <text>` | Tooltip text for the small image |
+| `spacekeep start --elapsed` | Show live elapsed time counter on your status |
+| `spacekeep start --party <size>` | Show party size (format: current/max, e.g. 1/4) |
 | `spacekeep stop` | Stop the active broadcast |
 | `spacekeep status` | Check connection state, env configuration, and current activity |
 | `spacekeep --help` | Show help information |
@@ -126,6 +130,18 @@ Shows "Playing Cyberpunk 2077" with the game logo in the bottom-right corner of 
 spacekeep start --follow
 ```
 Automatically updates your SpaceKeep status when you start or stop playing a game on Discord.
+
+**Show Elapsed Time**
+```bash
+spacekeep start --game "Cyberpunk 2077" --elapsed
+```
+Displays a live elapsed time counter since you started playing.
+
+**Show Party Size**
+```bash
+spacekeep start --game "Cyberpunk 2077" --party 1/4
+```
+Shows party size (1 out of 4) next to your status.
 
 **Stop Broadcasting**
 ```bash
@@ -175,6 +191,23 @@ spacekeep start --game "Cyberpunk 2077" --icon cyberpunk_2077_logo --icon-text "
 ```
 
 > **Note:** The `--icon` value must be a Discord asset key uploaded to your application in the [Developer Portal](https://discord.com/developers/applications).
+
+#### Elapsed Time
+
+Show a live elapsed time counter since you started playing:
+
+```bash
+spacekeep start --game "Cyberpunk 2077" --elapsed
+```
+
+#### Party Size
+
+Show how many players are in your party:
+
+```bash
+spacekeep start --game "Cyberpunk 2077" --party 1/4
+```
+Format is `current/max` (e.g. `1/4` means you are 1 out of 4 players).
 
 #### Auto-Follow Mode
 
@@ -312,6 +345,12 @@ SpaceKeep is a modern infrastructure management platform designed for developers
 ---
 
 ## 📋 Changelog
+
+### v1.3.0 (2026-07-01)
+
+- ⏱️ Added `--elapsed` flag to show live elapsed time counter
+- 👥 Added `--party <size>` flag to display party size (format: current/max)
+- 🎮 Game presence now supports timestamps and party indicators for more visibility
 
 ### v1.2.0 (2026-07-01)
 
