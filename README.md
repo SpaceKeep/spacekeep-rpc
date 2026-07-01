@@ -34,7 +34,9 @@
 | 🎮 **Discord Rich Presence** | Display your SpaceKeep development status with interactive buttons. |
 | ✅ **Idempotent Commands** | `start` and `stop` are safe to run multiple times. |
 | 🎯 **Custom Status** | Override details and state via CLI flags. |
-| 📊 **Status Check** | Verify connection state and env configuration. |
+| 🎲 **Game Detection** | Auto-detect when you start playing a game on Discord (`--follow`). |
+| 🕹️ **Manual Game Mode** | Manually set a game name (`--game`) without auto-detection. |
+| 📊 **Status Check** | Verify connection state, env configuration, and current activity. |
 
 ---
 
@@ -85,8 +87,10 @@ echo "CLIENT_ID=your_discord_client_id_here" > ~/.spacekeep.env
 |---------|-------------|
 | `spacekeep start` | Start broadcasting your Rich Presence status |
 | `spacekeep start --details "text" --state "text"` | Start with custom status text |
+| `spacekeep start --game "Game Name"` | Manually set status to show you are playing a game |
+| `spacekeep start --follow` | Automatically update status when you start playing a game |
 | `spacekeep stop` | Stop the active broadcast |
-| `spacekeep status` | Check connection state and env configuration |
+| `spacekeep status` | Check connection state, env configuration, and current activity |
 | `spacekeep --help` | Show help information |
 | `spacekeep --version` | Show version number |
 
@@ -103,6 +107,18 @@ This will display your SpaceKeep development status on your Discord profile.
 spacekeep start --details "Refactoring CLI" --state "v2.0.0-beta"
 ```
 
+**Manually Set Game Status**
+```bash
+spacekeep start --game "Cyberpunk 2077"
+```
+Shows "Playing Cyberpunk 2077" in your Discord status.
+
+**Auto-Follow Game Activity**
+```bash
+spacekeep start --follow
+```
+Automatically updates your SpaceKeep status when you start or stop playing a game on Discord.
+
 **Stop Broadcasting**
 ```bash
 spacekeep stop
@@ -112,7 +128,7 @@ spacekeep stop
 ```bash
 spacekeep status
 ```
-Shows whether RPC is connected, the active env file, and your Client ID.
+Shows whether RPC is connected, the active env file, your Client ID, and current activity.
 
 ---
 
@@ -128,21 +144,33 @@ CLIENT_ID=your_new_client_id_here
 
 ### Custom Status Messages
 
-Edit `index.js` to customize the status messages:
+Use CLI flags to customize your status without editing code:
 
-```javascript
-client.setActivity({
-  details: "Building SpaceKeep",
-  state: "v1.0.0-production",
-  largeImageKey: "spacekeep_logo",
-  largeImageText: "SpaceKeep Infrastructure",
-  buttons: [
-    { label: "Dashboard", url: "https://spacekeep.dev" },
-    { label: "GitHub Org", url: "https://github.com/SpaceKeep" }
-  ],
-  instance: false
-});
+```bash
+spacekeep start --details "Building SpaceKeep" --state "v1.0.0-production"
 ```
+
+### Game Status
+
+#### Manual Game Mode
+
+Manually set a game name to broadcast:
+
+```bash
+spacekeep start --game "Cyberpunk 2077"
+```
+
+#### Auto-Follow Mode
+
+Automatically detect and broadcast whatever game you are currently playing on Discord:
+
+```bash
+spacekeep start --follow
+```
+
+When you start a game, SpaceKeep will update your status to show `Playing <Game Name>`. When you stop playing, it reverts to your default status.
+
+> **Note:** Auto-follow requires Discord to be running and the game to be detectable by Discord's activity system.
 
 ### Custom Buttons
 
@@ -217,6 +245,7 @@ npm pack
 | **"Client has been destroyed"** | The process was stopped. Restart the CLI to broadcast again. |
 | **Buttons not showing on Discord** | Buttons are only visible to other users, not yourself. Check your Discord Developer Portal settings and restart Discord. |
 | **"spacekeep: command not found"** | Run `npm link` again and verify you're in the project directory. |
+| **"unknown command 'status'"** | You are using an older global install. Run `npm link` in the local repo or use `node index.js status` for the latest features. |
 
 </details>
 
@@ -266,6 +295,14 @@ SpaceKeep is a modern infrastructure management platform designed for developers
 ---
 
 ## 📋 Changelog
+
+### v1.2.0 (2026-07-01)
+
+- 🎲 Added `--follow` flag to auto-detect and broadcast current game activity
+- 🕹️ Added `--game <name>` flag to manually set game status
+- 🎯 Enhanced `--details` and `--state` customization
+- 📊 `status` now shows current activity details
+- 🛡️ Graceful handling of presence updates and game transitions
 
 ### v1.1.0 (2026-07-01)
 

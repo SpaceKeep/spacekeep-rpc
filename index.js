@@ -26,6 +26,22 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const client = new RPC.Client({ transport: 'ipc' });
 let isConnected = false;
 let isDestroyed = false;
+let currentActivity = null;
+
+function setActivity(details, state) {
+  currentActivity = { details, state };
+  client.setActivity({
+    details,
+    state,
+    largeImageKey: 'spacekeep_logo',
+    largeImageText: 'SpaceKeep Infrastructure',
+    buttons: [
+      { label: 'Dashboard', url: 'https://spacekeep.dev' },
+      { label: 'GitHub Org', url: 'https://github.com/SpaceKeep' }
+    ],
+    instance: false
+  });
+}
 
 program
   .name('spacekeep')
@@ -37,6 +53,8 @@ program
   .description('Initialize the SpaceKeep Rich Presence broadcast.')
   .option('--details <text>', 'Custom details text', 'Building SpaceKeep')
   .option('--state <text>', 'Custom state text', 'v1.0.0-production')
+  .option('--game <name>', 'Set status to show you are playing a specific game')
+  .option('--follow', 'Automatically update status when you start playing a game on Discord')
   .action((options) => {
     if (isDestroyed) {
       console.error('Error: Client has been destroyed. Restart the process to broadcast again.');
@@ -57,18 +75,28 @@ program
 
     client.once('ready', () => {
       isConnected = true;
-      client.setActivity({
-        details: options.details,
-        state: options.state,
-        largeImageKey: 'spacekeep_logo',
-        largeImageText: 'SpaceKeep Infrastructure',
-        buttons: [
-          { label: 'Dashboard', url: 'https://spacekeep.dev' },
-          { label: 'GitHub Org', url: 'https://github.com/SpaceKeep' }
-        ],
-        instance: false
-      });
-      console.log(`Successfully initialized SpaceKeep RPC broadcast (env: ${envPath || 'none'}).`);
+
+      if (options.game) {
+        setActivity(`Playing ${options.game}`, options.state);
+        console.log(`Broadcasting: Playing ${options.game}`);
+      } else {
+        setActivity(options.details, options.state);
+        console.log(`Successfully initialized SpaceKeep RPC broadcast (env: ${envPath || 'none'}).`);
+      }
+
+      if (options.follow) {
+        console.log('Following game activity...');
+        client.on('presenceUpdate', (_, presence) => {
+          const game = presence.activities?.find((a) => a.type === 0 && a.name);
+          if (game) {
+            setActivity(`Playing ${game.name}`, options.state);
+            console.log(`Now playing: ${game.name}`);
+          } else if (currentActivity?.details?.startsWith('Playing ')) {
+            setActivity(options.details, options.state);
+            console.log('Stopped playing, reverted to default status.');
+          }
+        });
+      }
     });
 
     client.on('disconnect', () => {
@@ -123,6 +151,7 @@ program
       console.log('Status: Broadcasting.');
       console.log(`Env file: ${envPath || 'none detected'}`);
       console.log(`Client ID: ${CLIENT_ID}`);
+      console.log(`Current activity: ${currentActivity?.details || 'none'}${currentActivity?.state ? ' - ' + currentActivity.state : ''}`);
       process.exit(0);
     }
 
